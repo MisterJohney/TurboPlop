@@ -1,0 +1,21 @@
+.navbar {
+  background-color: #292929;
+}
+
+.aboutLink,.signInLink,.signUpLink{
+  font-size: 24px;
+  color: FFF;
+  background-color: blue;
+}
+
+.aboutLink {
+  background-color: #292929;
+}
+
+.signInLink {
+  background-color: #FFF;
+}
+
+.signUpLink {
+  background-color: #F15025;
+}
