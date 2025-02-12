@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Landing from './pages/landing/Landing.jsx'
 import About from './pages/about/About.jsx'
+import Signin from './pages/signin/Signin.jsx'
 
 import Navbar from './components/navbar/Navbar.jsx'
 
@@ -17,8 +18,7 @@ function App() {
   return (
     <>
       <div>
-        <Navbar />
-        <About />
+        <Signin />
       </div>
     </>
   )
