@@ -1,0 +1,24 @@
+.landing {
+    display: block;
+    font-family: sans-serif;
+    align-items: center;
+    justify-content: center;
+    padding: 2em;
+}
+
+.lading-left {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.uploadButton {
+  font-size: 1.5rem;
+  background-color: #F15025;
+  color: #FFF;
+  padding: 0.35em;
+  margin: 1.5em;
+  padding-left: 1.2em;
+  padding-right: 1.2em;
+  border-radius: 0.2em;
+  font-weight: bold;
+  text-decoration: none;
+}

@@ -5,7 +5,12 @@ import "./landing.css"
 const Landing = () => {
   return (
     <div className="landing">
-      <h1>Dis is a landing page</h1>
+      <div className="landing-left">
+        <a href="/" className="uploadButton">Upload</a>
+      </div>
+      <div className="landing-right">
+        <p>Hello</p>
+      </div>
     </div>
   );
 };
