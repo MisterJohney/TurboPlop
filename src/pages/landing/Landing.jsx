@@ -9,7 +9,7 @@ const Landing = () => {
         <a href="/" className="uploadButton">Upload</a>
       </div>
       <div className="landing-right">
-        <p>Hello</p>
+        <h1>Blazingly fast way to upload your files</h1>
       </div>
     </div>
   );

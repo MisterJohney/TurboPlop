@@ -1,0 +1,21 @@
+h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+.about {
+    display: flex;
+    font-family: sans-serif;
+    /*align-items: center;*/
+    justify-content: center;
+    margin: 7em;
+}
+
+.about-text-box {
+    box-shadow: 0px 0px 4em 0.25em #aaa;
+    border-radius: 30px;
+    width: 85em;
+    padding: 7em;
+    padding-top: 10em;
+    padding-bottom: 10em;
+}

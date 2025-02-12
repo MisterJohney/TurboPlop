@@ -7,6 +7,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import Landing from './pages/landing/Landing.jsx'
+import About from './pages/about/About.jsx'
+
 import Navbar from './components/navbar/Navbar.jsx'
 
 function App() {
@@ -16,7 +18,7 @@ function App() {
     <>
       <div>
         <Navbar />
-        <Landing />
+        <About />
       </div>
     </>
   )
