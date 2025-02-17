@@ -7,24 +7,10 @@ label {
     text-align: center;
 }
 
-.signinbutton {
-  font-size: 1.5rem;
-  padding: 0.35em;
-  margin: 1.5em;
-  padding-left: 1.2em;
-  padding-right: 1.2em;
-  border-radius: 0.2em;
-  font-weight: bold;
-  text-decoration: none;
-
-  background-color: #FFF;
-  color: #000;
-}
 
 .signin {
     display: flex;
     font-family: sans-serif;
-    /*align-items: center;*/
     justify-content: center;
     margin: 7em;
 }
@@ -33,10 +19,36 @@ label {
     display: grid;
     box-shadow: 0px 0px 4em 0.25em #aaa;
     border-radius: 30px;
-    width: 35em;
+    width: 20em;
+    height: 25em;
     padding: 7em;
-    padding-top: 10em;
+    padding-top: 4em;
     padding-bottom: 10em;
+}
 
+.signinbutton {
+  font-size: 1.5rem;
+  padding: 0.35em;
+  margin: 1.5em;
+  padding-left: 1.2em;
+  padding-right: 1.2em;
+  border-radius: 0.2em;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: bold;
+  text-decoration: none;
+  border: none;
+  width: 10em;
+  background-color: #F15025;
+  color: #FFF;
+}
 
+.signin-input {
+  font-size: 1rem;
+  padding: 1em;
+  margin-bottom: 2em;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 0.25em solid #888;
 }
