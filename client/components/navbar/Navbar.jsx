@@ -11,9 +11,9 @@ const Navbar = () => {
         <a href="/" className="logo">TurboPlop</a>
       </div>
       <div className="right">
-        <a href="/" className="aboutLink">About</a>
-        <a href="/" className="signInLink">Sign in</a>
-        <a href="/" className="signUpLink">Sign up</a>
+        <a href="/about" className="aboutLink">About</a>
+        <a href="/signin" className="signInLink">Sign in</a>
+        <a href="/signup" className="signUpLink">Sign up</a>
       </div>
     </div>
   );
