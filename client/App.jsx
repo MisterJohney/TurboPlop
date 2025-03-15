@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -14,7 +14,18 @@ import Signup from './pages/signup/Signup.jsx'
 import Navbar from './components/navbar/Navbar.jsx'
 
 function App() {
-  //const [count, setCount] = useState(0)
+  const [backendData, setBackendData] = useState([{}]);
+
+// Some test API calls. TODO: make so I don't have to write http://localhost:5000
+  useEffect(() => {
+    fetch("http://localhost:5000/api").then(
+      response => response.json()
+    ).then(
+      data => {
+        setBackendData(data)
+      }
+    )
+  }, []);
 
   const router = createBrowserRouter([
     {
@@ -30,6 +41,14 @@ function App() {
       element: (
         <>
         <Navbar />
+          {(typeof backendData.users === 'undefined') ? (
+            <p>Loading</p>
+          ) : (
+            backendData.users.map((user, i) => (
+              <p key={i}>{user}</p>
+            ))
+          )}
+
         <About />
         </>
       )},
