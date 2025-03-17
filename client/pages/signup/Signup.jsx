@@ -15,7 +15,7 @@ const Signup = () => {
           <input type="password" className="signup-input" id="password" name="password" />
           <label for="retype-password">Retype Password</label>
           <input type="password" className="signup-input" id="retype-password" name="retype-password" />
-          <input type="submit" className="signupbutton" value="Sign in" />
+          <input type="submit" className="signupbutton" value="Sign up" />
         </div>
         <div className="signup-right">
           <h1>TurboPlop</h1>
