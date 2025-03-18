@@ -5,12 +5,15 @@ const path = require("path");
 //const cookieParser = require("cookie-parser");
 const multer = require("multer")
 
+//const utils = require("./utils/utils.js");
+
 const app = express();
 
+let downloadLink = ""
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "uploads/");
+        cb(null, "uploads/" + downloadLink);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
