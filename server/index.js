@@ -44,6 +44,12 @@ app.post('/api/upload', upload.array("upload-files", 10), (req, res) => {
   `);
 });
 
+app.post('/api/signin', (req, res) => {
+
+}
+app.post('/api/signup', (req, res) => {
+
+}
 
 app.listen(5000, () => {
   console.log("Server started on port 5000");
