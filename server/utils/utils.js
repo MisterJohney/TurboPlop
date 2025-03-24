@@ -10,4 +10,4 @@ class utils {
   }
 }
 
-modfunction ule.exports = utils;
+module.exports = utils;

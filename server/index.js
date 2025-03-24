@@ -2,13 +2,16 @@
 
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 //const cookieParser = require("cookie-parser");
 const multer = require("multer")
 
-//const utils = require("./utils/utils.js");
+const utils = require("./utils/utils.js");
 
+const util = new utils();
 const app = express();
 
+let downloadLinks = [];
 let downloadLink = ""
 
 const storage = multer.diskStorage({
@@ -44,12 +47,22 @@ app.post('/api/upload', upload.array("upload-files", 10), (req, res) => {
   `);
 });
 
-app.post('/api/signin', (req, res) => {
+app.get('/api/signin', (req, res) => { // Might change back to post
+  downloadLink = util.generateLink(10);
+  downloadLinks.push(downloadLink)
+  res.send(downloadLinks);
+});
 
-}
 app.post('/api/signup', (req, res) => {
+});
 
-}
+app.get('/api/link/:link', (req, res) => {
+  if (downloadLinks.includes(req.params.link)) {
+    res.send("YEs");
+  } else {
+    res.send("no");
+  }
+});
 
 app.listen(5000, () => {
   console.log("Server started on port 5000");

@@ -7,15 +7,17 @@ const Signup = () => {
     <div className="signup">
       <div className="signup-box">
         <div className="signup-left">
-          <label for="username">Username</label>
-          <input type="text" className="signup-input" id="username" name="username" />
-          <label for="email">email</label>
-          <input type="text" className="signup-input" id="email" name="email" />
-          <label for="password">Password</label>
-          <input type="password" className="signup-input" id="password" name="password" />
-          <label for="retype-password">Retype Password</label>
-          <input type="password" className="signup-input" id="retype-password" name="retype-password" />
-          <input type="submit" className="signupbutton" value="Sign up" />
+          <form action="http://localhost/api/signup" method="post">
+            <label for="username">Username</label>
+            <input type="text" className="signup-input" id="username" name="username" />
+            <label for="email">email</label>
+            <input type="text" className="signup-input" id="email" name="email" />
+            <label for="password">Password</label>
+            <input type="password" className="signup-input" id="password" name="password" />
+            <label for="retype-password">Retype Password</label>
+            <input type="password" className="signup-input" id="retype-password" name="retype-password" />
+            <input type="submit" className="signupbutton" value="Sign up" />
+          </form>
         </div>
         <div className="signup-right">
           <h1>TurboPlop</h1>
