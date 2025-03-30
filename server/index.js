@@ -11,58 +11,76 @@ const utils = require("./utils/utils.js");
 const util = new utils();
 const app = express();
 
-let downloadLinks = [];
-let downloadLink = ""
+
+// Init
+
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/" + downloadLink);
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    },
+  destination: (req, file, cb) => {
+    // Use the same folder for all files uploaded in the same request
+    const folderName = req.uploadFolder; // Use the folder created before Multer processes files
+    const folderPath = path.join(uploadsDir, folderName);
+
+    // Ensure the folder exists before uploading the files
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath);
+    }
+
+    // Set the destination folder path for the file upload
+    cb(null, folderPath);
+  },
+  filename: (req, file, cb) => {
+    // Preserve the original file name
+    cb(null, file.originalname);
+  }
 });
+
 const upload = multer({ storage: storage });
 
+// Middleware to generate a unique folder for the current upload
+app.use((req, res, next) => {
+  // Generate a unique folder name for this request
+  req.uploadFolder = util.generateLink(6);
+  next(); // Proceed to the next middleware (Multer)
+});
 
 app.use("/uploads", express.static("uploads"));
 
 
-app.get('/api', (req, res) => {
-  res.json({"users": ["one", "two", "three"]});
-});
+// Routes
 
-app.post('/api/upload', upload.array("upload-files", 10), (req, res) => {
+app.post('/api/upload', upload.array('upload-files', 10), (req, res) => {
   if (!req.files || req.files.length === 0) {
-      return res.status(400).send("No file");
+    return res.status(400).json({ error: 'No files uploaded' });
   }
-  let downloadLinks = req.files.map(file => {
-      // TODO: make so when downloading it downloads with uploaded name
-    return `<a href="/uploads/${file.filename}" download>Download ${file.originalname}</a>`;
-}).join('<br>');
-    res.send(`
-    <h2>Files uploaded successfully!</h2>
-    <div>${downloadLinks}</div>
-    <br>
-  `);
+
+  // Get the folder name where the files are stored (it's the same for all files in this upload)
+  const folderName = req.uploadFolder;
+
+  // Create a list of URLs for each uploaded file
+  const links = req.files.map(file => {
+    return `http://localhost:5000/files/${folderName}/${file.filename}`;
+  });
+
+  // Respond with the list of file links
+  res.json({ message: 'Files uploaded successfully', links });
 });
 
-app.get('/api/signin', (req, res) => { // Might change back to post
-  downloadLink = util.generateLink(10);
-  downloadLinks.push(downloadLink)
-  res.send(downloadLinks);
-});
+//app.get('/api/signin', (req, res) => { // Might change back to post
+//  link = util.generateLink(10);
+//  links.push(link)
+//  res.send(links);
+//});
+//
+//app.post('/api/signup', (req, res) => {
+//});
+//
 
-app.post('/api/signup', (req, res) => {
-});
-
-app.get('/api/link/:link', (req, res) => {
-  if (downloadLinks.includes(req.params.link)) {
-    res.send("YEs");
-  } else {
-    res.send("no");
-  }
-});
+app.use('/files', express.static(uploadsDir));
 
 app.listen(5000, () => {
   console.log("Server started on port 5000");
