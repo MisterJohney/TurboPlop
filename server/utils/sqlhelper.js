@@ -4,9 +4,6 @@ const sqlite3 = require("sqlite3").verbose();
 const crypto = require('crypto');
 
 class sqlhelper {
-  //constructor() {
-  //}
-
   connect(filename) {
     this.db = new sqlite3.Database(filename, (err) => {
       if (err) {
@@ -26,6 +23,7 @@ class sqlhelper {
     });
   }
 
+  //TODO: add rest of the tables
   createTables() {
     // User table
     this.db.run(`CREATE TABLE IF NOT EXISTS "User" (
@@ -37,25 +35,20 @@ class sqlhelper {
   );`);
   }
 
-  // TODO: might add input verification
-  createUser(username, email, password) {
-    //let encryptedPassword = crypto.createHash('sha256').update(password).digest('hex');
-    this.db.run(`INSERT INTO "User"("username", "email", "password") VALUES(?, ?, ?)`, [username, email, this.#encrypt(password)]);
+  createUser(form) {
+    this.db.run(`INSERT INTO "User"("username", "email", "password") VALUES(?, ?, ?)`, [form.username, form.email, this.#encrypt(form.password)]);
   }
 
-  validateUser(username, password) {
+  validateUser(form) {
     this.db.all(`SELECT username, password FROM "User"
-      WHERE username=(?)`, [username], (err, row) => {
+      WHERE username=(?)`, [form.username], (err, row) => {
         if (err) {
           console.error(err.message);
           return false;
         } else if (!row[0]){
-          //console.error("nothing found");
           return false;
         } else {
-          //console.log(row[0].username);
-          if (this.#encrypt(password) !== row[0].password) {
-            //console.log("login failed");
+          if (this.#encrypt(form.password) !== row[0].password) {
             return false;
           } else {
             console.log("You can be authentificated");
@@ -72,16 +65,8 @@ class sqlhelper {
 
 module.exports = sqlhelper;
 
-
-
-//let a = new sqlhelper();
-//a.connect("./test.db");
-//a.createTables();
-//a.close();
-
+// Create db
 //let help = new sqlhelper();
-//help.connect("./turboplop.db");
-////help.createTables();
-////help.createUser("Zedis", "emial", "password1");
-//help.validateUser("Zedis", "password");
+//help.connect("../turboplop.db");
+//help.createTables();
 //help.close();

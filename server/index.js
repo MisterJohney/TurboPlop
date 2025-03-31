@@ -5,10 +5,14 @@ const path = require("path");
 const fs = require("fs");
 //const cookieParser = require("cookie-parser");
 const multer = require("multer")
+const bodyParser = require("body-parser");
 
 const utils = require("./utils/utils.js");
+const sqlhelper = require("./utils/sqlhelper.js");
 
 const util = new utils();
+const sql = new sqlhelper();
+
 const app = express();
 
 
@@ -19,23 +23,21 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
 }
 
+// Multer setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Use the same folder for all files uploaded in the same request
     const folderName = req.uploadFolder; // Use the folder created before Multer processes files
     const folderPath = path.join(uploadsDir, folderName);
 
-    // Ensure the folder exists before uploading the files
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath);
     }
 
-    // Set the destination folder path for the file upload
     cb(null, folderPath);
   },
   filename: (req, file, cb) => {
-    // Preserve the original file name
-    cb(null, file.originalname);
+    cb(null, file.originalname);  // Preserve the original file name
   }
 });
 
@@ -43,10 +45,11 @@ const upload = multer({ storage: storage });
 
 // Middleware to generate a unique folder for the current upload
 app.use((req, res, next) => {
-  // Generate a unique folder name for this request
   req.uploadFolder = util.generateLink(6);
-  next(); // Proceed to the next middleware (Multer)
+  next();
 });
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/uploads", express.static("uploads"));
 
@@ -75,10 +78,42 @@ app.post('/api/upload', upload.array('upload-files', 10), (req, res) => {
 //  links.push(link)
 //  res.send(links);
 //});
-//
-//app.post('/api/signup', (req, res) => {
-//});
-//
+
+function registerUser(form) {
+  // Check username duplicates
+  // TODO: add this
+
+  const emailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/gm;
+  const isValid = emailRegex.exec(form.email);
+  if (!isValid) {
+    return false;
+  }
+
+  if (form.password.length < 8) {
+    return false;
+  }
+
+  if (form.password !== form.retypePassword) {
+    return false
+  }
+
+  // Add to database
+  sql.connect("./turboplop.db");
+  sql.createUser(form)
+  sql.close();
+  return true;
+}
+
+app.post('/api/signup', (req, res) => {
+  const signupInfo = req.body;
+  let isRegistered = registerUser(req.body);
+  if (!isRegistered) {
+    res.json({ message: "User not registered, becauce entered credentials were wrong"})
+  } else {
+    res.json({ message: 'User registered successfully' });
+  }
+});
+
 
 app.use('/files', express.static(uploadsDir));
 
