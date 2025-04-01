@@ -1,0 +1,38 @@
+h1 {
+  font-size: 3rem;
+  text-align: center;
+}
+
+tr:not(:first-child){
+  border-bottom: 1px solid #000;
+  margin: 1em;
+}
+
+td {
+  padding: 0.5em;
+}
+
+.home {
+  display: grid;
+  font-family: sans-serif;
+  /*align-items: center;*/
+  justify-content: center;
+  /*margin: 7em;*/
+}
+
+.file-box {
+  box-shadow: 0px 0px 4em 0.25em #aaa;
+  border-radius: 30px;
+  width: 85em;
+  padding: 3em;
+}
+
+.file-box table {
+  border-collapse: collapse;
+  font-size: 1.25em;
+  width: 100%;
+}
+
+.td-center {
+  text-align: center;
+}

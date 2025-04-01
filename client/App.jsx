@@ -10,6 +10,7 @@ import Landing from './pages/landing/Landing.jsx'
 import About from './pages/about/About.jsx'
 import Signin from './pages/signin/Signin.jsx'
 import Signup from './pages/signup/Signup.jsx'
+import Home from './pages/home/Home.jsx'
 
 import Navbar from './components/navbar/Navbar.jsx'
 
@@ -32,40 +33,43 @@ function App() {
       path: "/",
       element: (
         <>
-        <Navbar />
-        <Landing />
+          <Navbar />
+          <Landing />
         </>
       )},
     {
       path: "/about",
       element: (
         <>
-        <Navbar />
-          {(typeof backendData.users === 'undefined') ? (
-            <p>Loading</p>
-          ) : (
-            backendData.users.map((user, i) => (
-              <p key={i}>{user}</p>
-            ))
-          )}
-
-        <About />
+          <Navbar />
+          <About />
         </>
       )},
     {
       path: "/signin",
       element: (
         <>
-        <Signin />
+          <Signin />
         </>
       )},
     {
       path: "/signup",
       element: (
         <>
-        <Signup />
+          <Signup />
         </>
       )},
+    {
+      path: "/home",
+      element: (
+        <>
+          <Navbar />
+          <Home />
+
+
+        </>
+      )
+    }
   ]);
 
   return (
