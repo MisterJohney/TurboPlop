@@ -1,0 +1,102 @@
+'use strict'
+
+const sqlite3 = require("sqlite3").verbose();
+const crypto = require('crypto');
+
+class sqlhelper {
+  connect(filename) {
+    this.db = new sqlite3.Database(filename, (err) => {
+      if (err) {
+        console.error(err.message);
+      }
+      console.log('Connected successfully.');
+    });
+  }
+
+  close() {
+    this.db.close((err) => {
+      if (err) {
+        console.error(err.message);
+      } else {
+        console.log("Connection closed");
+      }
+    });
+  }
+
+  createTables() {
+    // User table
+    this.db.serialize.run(`CREATE TABLE IF NOT EXISTS "User" (
+    "user_id"	INTEGER NOT NULL,
+    "username"	TEXT NOT NULL,
+    "email"	TEXT NOT NULL,
+    "password"	TEXT NOT NULL,
+    PRIMARY KEY("user_id" AUTOINCREMENT)
+  );`);
+
+    // File table
+    this.db.serialize.run(`CREATE TABLE IF NOT EXISTS "File" (
+    "file_id"	TEXT NOT NULL,
+    "user_id"	INTEGER,
+    "file_name"	TEXT NOT NULL,
+    "expiration_date"	TEXT NOT NULL,
+    "is_private"	INTEGER NOT NULL,
+    "shared_users"	TEXT,
+    PRIMARY KEY("file_id"),
+    FOREIGN KEY("user_id") REFERENCES "User"("user_id")
+);`);
+
+    // Settings table
+    this.db.serialize.run(`CREATE TABLE "Settings" (
+    "user_id"	INTEGER NOT NULL,
+    "theme"	TEXT NOT NULL,
+    "file_display_type"	TEXT NOT NULL,
+    FOREIGN KEY("user_id") REFERENCES "User"("user_id")
+);`);
+  }
+
+  createUser(form) {
+    this.db.run(`INSERT INTO "User"("username", "email", "password") VALUES(?, ?, ?)`, [form.username, form.email, this.#encrypt(form.password)]);
+  }
+
+  isValidLogin(form) {
+    this.db.all(`SELECT username, password FROM "User"
+      WHERE username=(?)`, [form.username], (err, row) => {
+        if (err) {
+          console.error(err.message);
+          return false;
+        } else if (!row[0]){
+          return false;
+        } else {
+          if (this.#encrypt(form.password) !== row[0].password) {
+            return false;
+          } else {
+            console.log("You can be authentificated");
+            return true;
+          }
+        }
+      });
+  }
+
+  #encrypt(password) {
+    return crypto.createHash('sha256').update(password).digest('hex');
+  }
+}
+
+module.exports = sqlhelper;
+
+//const form = {
+//  username: "Zedis"
+//}
+//let test = new sqlhelper();
+//test.connect("../turboplop.db")
+//let ifStat = test.isValidLogin(test);
+//console.log(ifStat)
+//
+//test.close();
+
+
+ //Create db
+//let help = new sqlhelper();
+//help.connect("../turboplop.db");
+//help.createTables();
+//help.close();

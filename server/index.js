@@ -73,11 +73,34 @@ app.post('/api/upload', upload.array('upload-files', 10), (req, res) => {
   res.json({ message: 'Files uploaded successfully', links });
 });
 
-//app.get('/api/signin', (req, res) => { // Might change back to post
-//  link = util.generateLink(10);
-//  links.push(link)
-//  res.send(links);
-//});
+
+app.post('/api/signin', async (req, res) => {
+  const sql = new sqlhelper();
+  try {
+    await sql.connect('turboplop.db');
+
+    const isLoginValid = await sql.isValidLogin(req.body);
+    console.log(`Login valid: ${isLoginValid}`);
+    res.json(isLoginValid);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    await sql.close();
+  }
+
+
+
+  //sql.connect("./turboplop.db");
+  //let validLogin = await sql.isValidLogin(req.body);
+  ////console.log("Valid login: " + validLogin)
+  //if (!validLogin) {
+  //  res.json({ message: "You can't now be signed in"});
+  //} else {
+  //  res.json({ message: "You are allowed to sign in"});
+  //}
+  //sql.close();
+
+});
 
 function registerUser(form) {
   // Check username duplicates
@@ -105,7 +128,6 @@ function registerUser(form) {
 }
 
 app.post('/api/signup', (req, res) => {
-  const signupInfo = req.body;
   let isRegistered = registerUser(req.body);
   if (!isRegistered) {
     res.json({ message: "User not registered, becauce entered credentials were wrong"})

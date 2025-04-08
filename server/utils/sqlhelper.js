@@ -1,63 +1,118 @@
-'use strict'
+'use strict';
 
 const sqlite3 = require("sqlite3").verbose();
 const crypto = require('crypto');
 
 class sqlhelper {
-  connect(filename) {
-    this.db = new sqlite3.Database(filename, (err) => {
-      if (err) {
-        console.error(err.message);
-      }
-      console.log('Connected successfully.');
-    });
+  constructor() {
+    this.db = null;
   }
 
-  close() {
-    this.db.close((err) => {
-      if (err) {
-        console.error(err.message);
-      } else {
-        console.log("Connection closed");
-      }
-    });
-  }
-
-  //TODO: add rest of the tables
-  createTables() {
-    // User table
-    this.db.run(`CREATE TABLE IF NOT EXISTS "User" (
-    "user_id"	INTEGER NOT NULL,
-    "username"	TEXT NOT NULL,
-    "email"	TEXT NOT NULL,
-    "password"	TEXT NOT NULL,
-    PRIMARY KEY("user_id" AUTOINCREMENT)
-  );`);
-  }
-
-  createUser(form) {
-    this.db.run(`INSERT INTO "User"("username", "email", "password") VALUES(?, ?, ?)`, [form.username, form.email, this.#encrypt(form.password)]);
-  }
-
-  validateUser(form) {
-    this.db.all(`SELECT username, password FROM "User"
-      WHERE username=(?)`, [form.username], (err, row) => {
+  // Use async function to establish a connection
+  async connect(filename) {
+    return new Promise((resolve, reject) => {
+      this.db = new sqlite3.Database(filename, (err) => {
         if (err) {
-          console.error(err.message);
-          return false;
-        } else if (!row[0]){
-          return false;
+          reject(err.message);
         } else {
-          if (this.#encrypt(form.password) !== row[0].password) {
-            return false;
-          } else {
-            console.log("You can be authentificated");
-            return true;
-          }
+          console.log('Connected successfully.');
+          resolve();
         }
       });
+    });
   }
 
+  // Use async function to close the connection
+  async close() {
+    return new Promise((resolve, reject) => {
+      this.db.close((err) => {
+        if (err) {
+          reject(err.message);
+        } else {
+          console.log("Connection closed");
+          resolve();
+        }
+      });
+    });
+  }
+
+  // Make createTables async
+  async createTables() {
+    await this.runQuery(`CREATE TABLE IF NOT EXISTS "User" (
+      "user_id" INTEGER NOT NULL,
+      "username" TEXT NOT NULL,
+      "email" TEXT NOT NULL,
+      "password" TEXT NOT NULL,
+      PRIMARY KEY("user_id" AUTOINCREMENT)
+    );`);
+
+    await this.runQuery(`CREATE TABLE IF NOT EXISTS "File" (
+      "file_id" TEXT NOT NULL,
+      "user_id" INTEGER,
+      "file_name" TEXT NOT NULL,
+      "expiration_date" TEXT NOT NULL,
+      "is_private" INTEGER NOT NULL,
+      "shared_users" TEXT,
+      PRIMARY KEY("file_id"),
+      FOREIGN KEY("user_id") REFERENCES "User"("user_id")
+    );`);
+
+    await this.runQuery(`CREATE TABLE "Settings" (
+      "user_id" INTEGER NOT NULL,
+      "theme" TEXT NOT NULL,
+      "file_display_type" TEXT NOT NULL,
+      FOREIGN KEY("user_id") REFERENCES "User"("user_id")
+    );`);
+  }
+
+  // Helper function to run queries
+  async runQuery(query, params = []) {
+    return new Promise((resolve, reject) => {
+      this.db.run(query, params, (err) => {
+        if (err) {
+          reject(err.message);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  // Insert user data synchronously
+  async createUser(form) {
+    await this.runQuery(`INSERT INTO "User"("username", "email", "password") VALUES(?, ?, ?)`, 
+      [form.username, form.email, this.#encrypt(form.password)]);
+  }
+
+  // Check if login is valid synchronously
+  async isValidLogin(form) {
+    const result = await this.getUserByUsername(form.username);
+    if (!result) {
+      console.log('User not found');
+      return false;
+    }
+    if (this.#encrypt(form.password) !== result.password) {
+      console.log('Incorrect password');
+      return false;
+    }
+    console.log("You can be authenticated");
+    return true;
+  }
+
+  // Helper function to retrieve a user by username
+  async getUserByUsername(username) {
+    return new Promise((resolve, reject) => {
+      this.db.get(`SELECT username, password FROM "User" WHERE username = ?`, [username], (err, row) => {
+        if (err) {
+          reject(err.message);
+        } else {
+          resolve(row);
+        }
+      });
+    });
+  }
+
+  // Encrypt the password
   #encrypt(password) {
     return crypto.createHash('sha256').update(password).digest('hex');
   }
@@ -65,8 +120,3 @@ class sqlhelper {
 
 module.exports = sqlhelper;
 
-// Create db
-//let help = new sqlhelper();
-//help.connect("../turboplop.db");
-//help.createTables();
-//help.close();
