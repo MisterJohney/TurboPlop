@@ -1,5 +1,7 @@
 const config = {
   db: {
-    location: "./turboplop.db"
-  }
+    location: "turboplop.db"
+  },
+
+  secretKey: "test"
 }

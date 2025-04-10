@@ -8,7 +8,7 @@ class sqlhelper {
     this.db = null;
   }
 
-  // Use async function to establish a connection
+  // Establish a connection
   async connect(filename) {
     return new Promise((resolve, reject) => {
       this.db = new sqlite3.Database(filename, (err) => {
@@ -22,7 +22,7 @@ class sqlhelper {
     });
   }
 
-  // Use async function to close the connection
+  // Close the connection
   async close() {
     return new Promise((resolve, reject) => {
       this.db.close((err) => {
@@ -36,7 +36,6 @@ class sqlhelper {
     });
   }
 
-  // Make createTables async
   async createTables() {
     await this.runQuery(`CREATE TABLE IF NOT EXISTS "User" (
       "user_id" INTEGER NOT NULL,
@@ -112,6 +111,31 @@ class sqlhelper {
     });
   }
 
+    async registerUser(form) {
+      // Check username duplicates
+      // TODO: add this
+
+      const emailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/gm;
+      const isValid = emailRegex.exec(form.email);
+      if (!isValid) {
+        return false;
+      }
+
+      if (form.password.length < 8) {
+        return false;
+      }
+
+      if (form.password !== form.retypePassword) {
+        return false
+      }
+
+      // Add to database
+      await this.connect("./turboplop.db");
+      await this.createUser(form)
+      await this.close();
+      return true;
+    }
+
   // Encrypt the password
   #encrypt(password) {
     return crypto.createHash('sha256').update(password).digest('hex');
@@ -120,3 +144,10 @@ class sqlhelper {
 
 module.exports = sqlhelper;
 
+
+// (async () => {
+//     let helper = new sqlhelper();
+//     await helper.connect("../turboplop.db");
+//     await helper.createTables();
+//     await helper.close();
+// })();

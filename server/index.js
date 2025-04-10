@@ -78,64 +78,25 @@ app.post('/api/signin', async (req, res) => {
   const sql = new sqlhelper();
   try {
     await sql.connect('turboplop.db');
-
     const isLoginValid = await sql.isValidLogin(req.body);
-    console.log(`Login valid: ${isLoginValid}`);
     res.json(isLoginValid);
   } catch (error) {
     console.error(error);
   } finally {
     await sql.close();
   }
-
-
-
-  //sql.connect("./turboplop.db");
-  //let validLogin = await sql.isValidLogin(req.body);
-  ////console.log("Valid login: " + validLogin)
-  //if (!validLogin) {
-  //  res.json({ message: "You can't now be signed in"});
-  //} else {
-  //  res.json({ message: "You are allowed to sign in"});
-  //}
-  //sql.close();
-
 });
 
-function registerUser(form) {
-  // Check username duplicates
-  // TODO: add this
 
-  const emailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/gm;
-  const isValid = emailRegex.exec(form.email);
-  if (!isValid) {
-    return false;
-  }
-
-  if (form.password.length < 8) {
-    return false;
-  }
-
-  if (form.password !== form.retypePassword) {
-    return false
-  }
-
-  // Add to database
-  sql.connect("./turboplop.db");
-  sql.createUser(form)
-  sql.close();
-  return true;
-}
-
-app.post('/api/signup', (req, res) => {
-  let isRegistered = registerUser(req.body);
+app.post('/api/signup', async (req, res) => {
+  let isRegistered = await sql.registerUser(req.body);
+  console.log(isRegistered);
   if (!isRegistered) {
-    res.json({ message: "User not registered, becauce entered credentials were wrong"})
+    res.json({ message: "User not registered, becauce entered credentials were wrong"});
   } else {
     res.json({ message: 'User registered successfully' });
   }
 });
-
 
 app.use('/files', express.static(uploadsDir));
 
