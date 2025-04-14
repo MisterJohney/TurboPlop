@@ -7,14 +7,16 @@ const fs = require("fs");
 const multer = require("multer")
 const bodyParser = require("body-parser");
 
-const authRoutes = require("./routes/auth.js")
-const uploadRoute = require("./routes/upload.js")
+const authRoutes = require("./routes/auth.js");
+const uploadRoute = require("./routes/upload.js");
+const homeRoute = require("./routes/home.js");
 const config = require("./config.js");
 const utils = require("./utils/utils.js");
-const sqlhelper = require("./utils/sqlhelper.js");
-
 const util = new utils();
+const sqlhelper = require("./utils/sqlhelper.js");
 const sql = new sqlhelper();
+
+
 
 const app = express();
 
@@ -39,6 +41,7 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api", authRoutes);
 app.use("/api", uploadRoute);
+app.use("/api", homeRoute);
 
 
 app.use('/files', express.static(config.config.uploadsDir));
