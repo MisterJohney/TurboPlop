@@ -39,7 +39,7 @@ app.use("/uploads", express.static("uploads"));
 
 // Routes
 
-app.use("/api", authRoutes);
+app.use(authRoutes);
 app.use("/api", uploadRoute);
 app.use("/api", homeRoute);
 
