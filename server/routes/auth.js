@@ -8,8 +8,8 @@ const sqlhelper = require("../utils/sqlhelper.js");
 const sql = new sqlhelper();
 
 
-router.post('/api/signin', async (req, res) => {
-  const sql = new sqlhelper();
+router.post('/signin', async (req, res) => {
+  // const sql = new sqlhelper();
   try {
     await sql.connect('turboplop.db');
     const isLoginValid = await sql.isValidLogin(req.body);
@@ -21,7 +21,7 @@ router.post('/api/signin', async (req, res) => {
       // res.json(isLoginValid);
       res.redirect("http://localhost:5173/home");
     } else {
-      res.json(isLoginValid);
+      res.status(400).json({ message: "Username and/or password is wrong" });
     }
   } catch (error) {
     console.error(error);
@@ -34,7 +34,7 @@ router.post('/signup', async (req, res) => {
   let isRegistered = await sql.registerUser(req.body);
   console.log(isRegistered);
   if (!isRegistered) {
-    res.json({ message: "User not registered, becauce entered credentials were wrong"});
+    res.status(400).json({ message: "User not registered, becauce entered credentials were wrong"});
   } else {
     res.json({ message: 'User registered successfully' });
   }

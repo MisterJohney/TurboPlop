@@ -13,8 +13,8 @@ const homeRoute = require("./routes/home.js");
 const config = require("./config.js");
 const utils = require("./utils/utils.js");
 const util = new utils();
-const sqlhelper = require("./utils/sqlhelper.js");
-const sql = new sqlhelper();
+// const sqlhelper = require("./utils/sqlhelper.js");
+// const sql = new sqlhelper();
 
 
 
@@ -39,7 +39,7 @@ app.use("/uploads", express.static("uploads"));
 
 // Routes
 
-app.use(authRoutes);
+app.use("/api", authRoutes);
 app.use("/api", uploadRoute);
 app.use("/api", homeRoute);
 

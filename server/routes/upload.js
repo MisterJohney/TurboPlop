@@ -5,7 +5,7 @@ const multer = require("multer");
 const config = require("../config.js");
 
 
-router.post('/upload', config.upload.array('upload-files', 10), (req, res) => {
+router.post('/upload', config.upload.array('upload-files', 1), (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ error: 'No files uploaded' });
   }
